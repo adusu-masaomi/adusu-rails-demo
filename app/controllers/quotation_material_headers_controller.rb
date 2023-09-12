@@ -137,6 +137,8 @@ class QuotationMaterialHeadersController < ApplicationController
   # GET /quotation_material_headers/new
   def new
     
+    is_reload = false
+    
     #画面の並びは昇順にする
     #新規は昇順、編集は降順。
     @form_detail_order = "sequential_id ASC"
@@ -162,7 +164,19 @@ class QuotationMaterialHeadersController < ApplicationController
       #グローバルを空に戻す
       $quotation_material_header = nil
     else
-      @quotation_material_header = QuotationMaterialHeader.new
+      #@quotation_material_header = QuotationMaterialHeader.new
+      if session[:quotation_material_headers_id].nil?   #add230912
+        @quotation_material_header = QuotationMaterialHeader.new
+      else
+        #リロードした場合 #add230912
+        @quotation_material_header = QuotationMaterialHeader.where(id: session[:quotation_material_headers_id]).first
+        session[:quotation_material_headers_id] = nil
+        if @quotation_material_header.nil?
+          @quotation_material_header = QuotationMaterialHeader.new
+        else
+          is_reload = true
+        end
+      end
     end
 
     #工事画面から遷移した場合、予めIDをセットする
@@ -171,8 +185,9 @@ class QuotationMaterialHeadersController < ApplicationController
     end
 
     #見積コードの自動採番
-    get_last_quotation_code_select
-
+    if !is_reload
+      get_last_quotation_code_select
+    end
   end
 
   #レコード毎のメール送信済みフラグを初期化する
@@ -404,6 +419,9 @@ class QuotationMaterialHeadersController < ApplicationController
         end
         #
         
+        #add230912
+        session[:quotation_material_headers_id] = @quotation_material_header.id
+        
         #見積依頼書・注文書の発行
         set_purchase_order_and_estimate(format)
                 
@@ -469,6 +487,9 @@ class QuotationMaterialHeadersController < ApplicationController
             set_quotation_order_fax_pdf(format)
           end
           #
+          
+          #add230912
+          session[:quotation_material_headers_id] = @quotation_material_header.id
           
           #見積依頼書・注文書の発行
           set_purchase_order_and_estimate(format)
