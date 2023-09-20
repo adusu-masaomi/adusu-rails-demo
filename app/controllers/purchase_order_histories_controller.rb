@@ -361,19 +361,34 @@ class PurchaseOrderHistoriesController < ApplicationController
         
         #binding.pry
         
-        if $id.present?
-          @purchase_order_data  = PurchaseOrderDatum.find($id)
-        elsif params[:purchase_order_history].present? && 
-              params[:purchase_order_history][:purchase_order_datum_id].present?
-          @purchase_order_data  = PurchaseOrderDatum.find(params[:purchase_order_history][:purchase_order_datum_id])
-        elsif params[:id].present?
+        #if $id.present?
+        #  @purchase_order_data  = PurchaseOrderDatum.find($id)
+        #elsif params[:purchase_order_history].present? && 
+        #      params[:purchase_order_history][:purchase_order_datum_id].present?
+        #  @purchase_order_data  = PurchaseOrderDatum.find(params[:purchase_order_history][:purchase_order_datum_id])
+        #elsif params[:id].present?
+        #  #予期せぬID??
+        #  #@purchase_order_data  = PurchaseOrderDatum.find(params[:id])
+        #  #upd230707
+        #  if PurchaseOrderDatum.where(:id => params[:id]).exists?
+        #    @purchase_order_data  = PurchaseOrderDatum.find(params[:id])
+        #  end
+        #end
+        #upd230915
+        if params[:id].present?
           #予期せぬID??
           #@purchase_order_data  = PurchaseOrderDatum.find(params[:id])
           #upd230707
           if PurchaseOrderDatum.where(:id => params[:id]).exists?
             @purchase_order_data  = PurchaseOrderDatum.find(params[:id])
           end
+        elsif $id.present?  #古いIDの場合有、注意...
+          @purchase_order_data  = PurchaseOrderDatum.find($id)
+        elsif params[:purchase_order_history].present? && 
+              params[:purchase_order_history][:purchase_order_datum_id].present?
+          @purchase_order_data  = PurchaseOrderDatum.find(params[:purchase_order_history][:purchase_order_datum_id])
         end
+        
         #if params[:id].present?
         #  #↑変なIDが来る？？
         #  #@purchase_order_data  = PurchaseOrderDatum.find(params[:id])
@@ -644,7 +659,12 @@ class PurchaseOrderHistoriesController < ApplicationController
         format.html { render :edit }
         format.json { render json: @purchase_order_history.errors, status: :unprocessable_entity }
       end
-
+    end
+    #２重注文しないようにメール送信フラグをセット
+    if params[:purchase_order_history][:sent_flag] != "1" 
+      @order_flag = true
+      set_mail_sent_flag
+      @order_flag = false
     end
     #
   end
@@ -919,7 +939,8 @@ class PurchaseOrderHistoriesController < ApplicationController
   #レコード毎にメール送信済みフラグをセットする
   def set_mail_sent_flag
 
-    if params[:purchase_order_history][:sent_flag] == "1" 
+    #if params[:purchase_order_history][:sent_flag] == "1" 
+    if params[:purchase_order_history][:sent_flag] == "1" || @order_flag  #upd230914
       if params[:purchase_order_history][:orders_attributes].present?
         params[:purchase_order_history][:orders_attributes].values.each do |item|
           item[:mail_sent_flag] = 1

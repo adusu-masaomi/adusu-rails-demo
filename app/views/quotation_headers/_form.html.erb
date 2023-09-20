@@ -91,14 +91,14 @@
   <div class="col-md-3" , style="margin-left : -15px">
     <font color="red">===ここまで===</font>
     
-    <%= f.input :construction_period, label:"工事期間（文字）" , input_html:{id:"construction_period", style: 'width:220px' ,}  %>
+    <%= f.input :construction_period, label:"工事期間（文字）" , input_html:{id:"construction_period", style: 'width:220px'}  %>
   </div>
   
   <!--210709 tabを削った -->
   <!--margin-top : +20px追加230712-->
   <div class="col-md-3" , style="margin-left : 90px;margin-top : 20px">
-    <%= f.input :construction_period_date1 , as: :string, input_html:{id: "construction_period_date1" , class: "datepicker", 
-           style: 'width:120px'  }  %>
+    <%= f.input :construction_period_date1 , as: :string, input_html:{id: "construction_period_date1" , class: "datetimepicker", 
+           style: 'width:120px' , autocomplete: 'off' }  %>
   </div>
  
   <!--210709 tabを削った -->
@@ -108,8 +108,8 @@
   </div>
   <!--margin-top : +20px追加230712-->
   <div class="col-md-3" , style="margin-left : -130px;margin-top : 20px">
-    <%= f.input :construction_period_date2 , as: :string, input_html:{id: "construction_period_date2" , class: "datepicker", 
-           style: 'width:120px'  }  %>
+    <%= f.input :construction_period_date2 , as: :string, input_html:{id: "construction_period_date2" , class: "datetimepicker", 
+           style: 'width:120px' , autocomplete: 'off' }  %>
   </div>
   
   </br></br></br></br></br></br>

@@ -20,7 +20,8 @@ class PurchaseListBySupplierPDF
         
         #$purchase_data.joins(:purchase_order_datum).order("purchase_date, purchase_order_code, id").each do |purchase_datum|
         #rails6対応
-        $purchase_data.joins(:purchase_order_datum).select("purchase_data.*, purchase_order_data.*").
+        #$purchase_data.joins(:purchase_order_datum).select("purchase_data.*, purchase_order_data.*").
+        $purchase_data.joins(:purchase_order_datum).select("purchase_data.*, purchase_order_data.purchase_order_code").
           order("purchase_data.purchase_date, purchase_order_data.purchase_order_code, purchase_data.id").each do |purchase_datum| 
         
           

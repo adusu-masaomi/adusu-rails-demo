@@ -216,7 +216,12 @@ class QuotationMaterialHeadersController < ApplicationController
     #注文NOの頭文字を定数ファイルから取得する
     @last_header_number = Constant.where(:id => 1).
            where("id is NOT NULL").pluck(:purchase_order_last_header_code).flatten.join(" ")
-
+    
+    #リロード用のセッションが残っている場合は、空にする
+    if session[:quotation_material_headers_id].present?
+      session[:quotation_material_headers_id] = nil
+    end
+    
   end
   
   def reset_mail_sent_flag

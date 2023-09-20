@@ -365,7 +365,7 @@
         "border-color": "#000000",
         "border-width": 1,
         "border-style": "solid",
-        "fill-color": "#FFFFFF"
+        "fill-color": "none"
       },
       "border-radius": 0
     },
@@ -837,7 +837,7 @@
         "border-color": "#000000",
         "border-width": 1,
         "border-style": "solid",
-        "fill-color": "#FFFFFF"
+        "fill-color": "none"
       },
       "border-radius": 0
     },

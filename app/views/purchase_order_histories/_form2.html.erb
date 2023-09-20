@@ -941,6 +941,13 @@ $(document).bind('cocoon:after-insert', function(e,inserted_item) {
 
  function submitPurchaseOrder()
  {
+   //数量チェック(add230920)
+   var after_check = checkQuantity(true);
+   if (after_check == false){
+     return false;
+   }
+   //
+ 
    if (window.confirm('注文書を発行しますか？')) {
     document.getElementById("format").value = "pdf";
     //注文書フラグをセット

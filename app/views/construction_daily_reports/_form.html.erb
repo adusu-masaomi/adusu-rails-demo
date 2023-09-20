@@ -20,7 +20,7 @@
   <!--<%= f.input :working_date , input_html:{id: "working_date" , class: "test", style: 'width:220px' , :tabindex=>"0" } , as: :date_picker %>-->
   <!--<%= f.input :working_date , as: :string, input_html:{id: "working_date" , class: "date-picker", style: 'width:120px' , :tabindex=>"0" }  %>-->
   <!--<%= f.input :working_date , as: :datepicker, input_html:{id: "working_date" , class:"datepicker", style: 'width:120px' , :tabindex=>"0", dateInputFormat: 'yyyy-MM-dd' }  %>-->
-  <%= f.input :working_date , as: :string, input_html:{id: "working_date" , style: 'width:120px' , class:"datetimepicker", :tabindex=>"0" }  %>
+  <%= f.input :working_date , as: :string, input_html:{id: "working_date" , style: 'width:120px' , class:"datetimepicker", :tabindex=>"0", autocomplete: 'off' }  %>
   
   <!--下記だと工事日がうまく更新されないので保留・・・-->
   <!--<%= f.input :working_date , input_html:{id: "working_date" , style: 'width:220px'}  %>-->

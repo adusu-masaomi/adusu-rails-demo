@@ -55,7 +55,10 @@ class PurchaseListPDF
       
       #$purchase_data.joins(:purchase_order_datum).order("purchase_order_code, purchase_date, id").each do |purchase_datum| 
       #postgreSQL仕様
-      $purchase_data.joins(:purchase_order_datum).select("purchase_data.*, purchase_order_data.*").order("purchase_order_data.purchase_order_code, purchase_data.purchase_date, purchase_data.id").each do |purchase_datum|
+      #$purchase_data.joins(:purchase_order_datum).select("purchase_data.*, purchase_order_data.*").order("purchase_order_data.purchase_order_code, purchase_data.purchase_date, purchase_data.id").each do |purchase_datum|
+      #upd230919
+      $purchase_data.joins(:purchase_order_datum).select("purchase_data.*, purchase_order_data.purchase_order_code").
+            order("purchase_order_data.purchase_order_code, purchase_data.purchase_date, purchase_data.id").each do |purchase_datum|
        
 		 #---見出し---
          page_count = report.page_count.to_s + "頁"
@@ -149,10 +152,12 @@ class PurchaseListPDF
                        #数量は小数点の場合あり、その場合で表示を切り分ける。
                        quantity = ""
                        first, second = purchase_datum.quantity.to_s.split('.')
-                       if second.to_i > 0
-                         quantity = sprintf("%.2f", purchase_datum.quantity)
-                       else
-                         quantity = sprintf("%.0f", purchase_datum.quantity)
+                       if purchase_datum.quantity.present? 
+                         if second.to_i > 0
+                           quantity = sprintf("%.2f", purchase_datum.quantity)
+                         else
+                           quantity = sprintf("%.0f", purchase_datum.quantity)
+                         end
                        end
                        #
 					   
