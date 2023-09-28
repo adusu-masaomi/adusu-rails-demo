@@ -34,7 +34,7 @@
   <%= f.label :working_date, '作業日' %>
   <%= f.text_field :working_date_gteq, class:"input-append date datetimepicker", include_blank: true ,  id: 'working_date_start', autocomplete: 'off'   %>
   <%= f.label :working_date, '〜' %>
-  <%= f.text_field :working_date_lteq, class:"input-append date datetimepicker", include_blank: true ,  id: 'working_date_end', autocomplete: 'off'   %>
+  <%= f.text_field :working_date_lteq, class:"input-append date datetimepicker2", include_blank: true ,  id: 'working_date_end', autocomplete: 'off'   %>
   
   	<div>
         <%= f.submit '検索(集計)', :class => 'btn btn-teal50_rsd' %>
@@ -188,6 +188,18 @@
 		}
 		$('#tablefix').tablefix({width: sz, height: ht, fixRows: 1, fixCols: fc});
         //$('#tablefix').tablefix({width: 1920, height: 610, fixRows: 1, fixCols: 1});
+        
+    //日付のdatetimepicker ２個以上の対応--rails6仕様
+    //(１つ目のみapplication.jsに記述)
+    $('.datetimepicker2').datetimepicker(
+      {
+        timepicker:false,
+        closeOnDateSelect:true,
+        format: 'Y/m/d',
+        lang: 'ja'
+      }
+    );
+    //datetimepicker end
   });
   
  //社員の検索リストを空にする

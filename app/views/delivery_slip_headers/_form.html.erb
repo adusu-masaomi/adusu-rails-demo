@@ -81,15 +81,15 @@
   </div>
   <div class="col-md-3" , style="margin-left : 90px">
     <%= f.input :construction_period_date1 , as: :string, input_html:{id: "construction_period_date1" , class: "datetimepicker", 
-           style: 'width:120px' , :tabindex=>"17" }, autocomplete: 'off'  %>
+           style: 'width:120px' , :tabindex=>"17" , autocomplete: 'off' }  %>
   </div>
  
   <div class="col-md-3" , style="margin-left : -30px ;margin-top : 35px">
     <%= f.label :〜, {:class => "my-custom-class-l"}  %>
   </div>
   <div class="col-md-3" , style="margin-left : -130px">
-    <%= f.input :construction_period_date2 , as: :string, input_html:{id: "construction_period_date2" , class: "datetimepicker", 
-           style: 'width:120px' , :tabindex=>"18" } , autocomplete: 'off' %>
+    <%= f.input :construction_period_date2 , as: :string, input_html:{id: "construction_period_date2" , class: "datetimepicker2", 
+           style: 'width:120px' , :tabindex=>"18" , autocomplete: 'off' } %>
   </div>
   </br></br></br>
   
@@ -182,13 +182,25 @@
 	     setCustomerInfoDefault();
      });
 	 
-	 //select2をenterキー押下した場合(リストが閉じられた時)のタブ移動。
-	 //顧客名の場合
-	 $( ".searchableCustomerName" ).on("select2:close", function (e) {
-	  　 $('[tabindex=5]').focus(); 
-	 });
-	 //
-   });
+    //select2をenterキー押下した場合(リストが閉じられた時)のタブ移動。
+    //顧客名の場合
+    $( ".searchableCustomerName" ).on("select2:close", function (e) {
+      $('[tabindex=5]').focus(); 
+    });
+    //
+    
+    //日付のdatetimepicker ２個以上の対応--rails6仕様
+    //(１つ目のみapplication.jsに記述)
+    $('.datetimepicker2').datetimepicker(
+      {
+        timepicker:false,
+        closeOnDateSelect:true,
+        format: 'Y/m/d',
+        lang: 'ja'
+      }
+    );
+    //datetimepicker end
+  });
    
   //フォームロード時のイベント
   window.onload = function(){

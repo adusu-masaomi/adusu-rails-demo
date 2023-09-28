@@ -108,7 +108,7 @@
   </div>
   <!--margin-top : +20px追加230712-->
   <div class="col-md-3" , style="margin-left : -130px;margin-top : 20px">
-    <%= f.input :construction_period_date2 , as: :string, input_html:{id: "construction_period_date2" , class: "datetimepicker", 
+    <%= f.input :construction_period_date2 , as: :string, input_html:{id: "construction_period_date2" , class: "datetimepicker2", 
            style: 'width:120px' , autocomplete: 'off' }  %>
   </div>
   
@@ -210,10 +210,23 @@
 	 });
 	 //
 	 
-	 //見積コード参照用
-	 $(".searchableSelect2_1").select2({ theme: "classic", allowClear: true , placeholder: "" });
-	 
-   });
+    //見積コード参照用
+    $(".searchableSelect2_1").select2({ theme: "classic", allowClear: true , placeholder: "" });
+   
+    
+    //日付のdatetimepicker ２個以上の対応--rails6仕様
+    //(１つ目のみapplication.jsに記述)
+    $('.datetimepicker2').datetimepicker(
+      {
+        timepicker:false,
+        closeOnDateSelect:true,
+        format: 'Y/m/d',
+        lang: 'ja'
+      }
+    );
+    //datetimepicker end
+    
+  });
   
   
  
