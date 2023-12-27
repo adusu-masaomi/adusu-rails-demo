@@ -14,6 +14,7 @@ class QuotationMaterialHeadersController < ApplicationController
     $seq  = 0        #フォーム用(追加時)
     $seq_exists = 0  #フォーム用
     $seq_max = 0  #最大値取得用
+    session[:seq_exists] = 0  #add231006
     
     #ransack保持用コード
     query = params[:q]
@@ -203,8 +204,10 @@ class QuotationMaterialHeadersController < ApplicationController
   def edit
     #画面の並びは昇順にする
     #新規は昇順、編集は降順。
-    @form_detail_order = "sequential_id DESC"
-  
+    #@form_detail_order = "sequential_id DESC"
+    #upd231007 編集も昇順
+    @form_detail_order = "sequential_id ASC"
+      
     $new_flag = 0
     
     #レコード毎のメール送信済みフラグを初期化するためのフラグをセット(一時用)
@@ -279,6 +282,9 @@ class QuotationMaterialHeadersController < ApplicationController
         $seq_max = 1
       end
     end
+    
+    session[:seq_exists] = $seq_exists  #add231006
+        
     #
   end
   
@@ -957,7 +963,8 @@ class QuotationMaterialHeadersController < ApplicationController
         #$order_parameters = params[:purchase_order_history][:orders_attributes]
         detail_parameters = params[:quotation_material_header][:quotation_material_details_attributes]
 	   
-        if $seq_exists > 0
+        #if $seq_exists > 0
+        if session[:seq_exists] > 0  #upd231116
           #昇順になっている場合は、本来の降順にしておく。
 	        #@detail_parameters = Hash[detail_parameters.sort.reverse]
           #rails6対応
@@ -1642,7 +1649,8 @@ class QuotationMaterialHeadersController < ApplicationController
       $seq = 0
     end
 
-    if $seq_exists == 0
+    #if $seq_exists == 0
+    if session[:seq_exists] == 0  #upd231006
     #降順とみなす
       @sort_order = "DESC"
     else
@@ -1720,9 +1728,10 @@ class QuotationMaterialHeadersController < ApplicationController
     
       #@seq = 0 #画面の連番用
     end
-	
+	  
     # Never trust parameters from the scary internet, only allow the white list through.
     def quotation_material_header_params
+      #231007 sequential_id追加
       params.require(:quotation_material_header).permit(:quotation_code, :quotation_header_origin_id, :requested_date, :construction_datum_id, 
                      :supplier_master_id, :responsible, :email, :delivery_place_flag, :notes_1, :notes_2, :notes_3,
                      :total_quotation_price_1, :total_quotation_price_2, :total_quotation_price_3,
@@ -1735,7 +1744,7 @@ class QuotationMaterialHeadersController < ApplicationController
                       :quantity, :unit_master_id, :list_price, :quotation_unit_price_1, :quotation_unit_price_2, :quotation_unit_price_3, 
                       :quotation_price_1, :quotation_price_2, :quotation_price_3, 
                       :bid_flag_1, :bid_flag_2, :bid_flag_3, :mail_sent_flag, :quotation_email_flag_1, :quotation_email_flag_2, 
-                      :quotation_email_flag_3, :order_email_flag_1, :order_email_flag_2, :order_email_flag_3,
+                      :quotation_email_flag_3, :order_email_flag_1, :order_email_flag_2, :order_email_flag_3, :sequential_id,
                       :_destroy])
         
     end

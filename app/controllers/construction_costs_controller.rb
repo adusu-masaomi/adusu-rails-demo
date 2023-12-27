@@ -11,15 +11,15 @@ class ConstructionCostsController < ApplicationController
     ###
     #ransack保持用コード
     query = params[:q]
-    query ||= eval(cookies[:recent_search_history].to_s)      
+    query ||= eval(cookies[:recent_search_history].to_s) 
     
     if params[:move_flag] == "1"
-       #工事一覧画面から遷移した場合
-       construction_id = params[:construction_id]
-       query = {"construction_datum_id_eq"=> construction_id }
+      #工事一覧画面から遷移した場合
+      construction_id = params[:construction_id]
+      query = {"construction_datum_id_eq"=> construction_id }
     end
-	
-	#@search = ConstructionCost.search(params[:q])
+
+    #@search = ConstructionCost.search(params[:q])
     
     #ransack保持用--上記はこれに置き換える
     @q = ConstructionCost.ransack(query)   
@@ -36,9 +36,9 @@ class ConstructionCostsController < ApplicationController
     #Rails6
     @construction_costs = @q.result
 
-	$construction_costs = @construction_costs
+    $construction_costs = @construction_costs
     
-   respond_to do |format|
+    respond_to do |format|
       format.html
       format.csv { send_data @construction_costs.to_csv.encode("SJIS"), type: 'text/csv; charset=shift_jis' }
       
@@ -58,10 +58,10 @@ class ConstructionCostsController < ApplicationController
         # ブラウザでPDFを表示する
         # disposition: "inline" によりダウンロードではなく表示させている
         send_data(
-          report.generate,
-          filename:  "construction_cost_final_list.pdf",
-          type:        "application/pdf",
-          disposition: "inline")
+        report.generate,
+        filename:  "construction_cost_final_list.pdf",
+        type:        "application/pdf",
+        disposition: "inline")
       end
       
       
@@ -165,24 +165,24 @@ class ConstructionCostsController < ApplicationController
     #binding.pry
    
     respond_to do |format|
-	
+
       if @construction_cost.update(construction_cost_params)
         #format.html { redirect_to @construction_cost, notice: 'Construction cost was successfully updated.' }
         #format.json { render :show, status: :ok, location: @construction_cost }
-		
-		if params[:format] == "pdf"  
-		  
-		  #更新後に集計表を出すようにする
-		  set_pdf(format)
-		 
-		else
-		#通常の更新の場合。
-		   
-		  format.html {redirect_to construction_cost_path(@construction_cost, :construction_id => params[:construction_id], 
-           :move_flag => params[:move_flag])}
-		end
-		 
-	  else
+
+        if params[:format] == "pdf"  
+  
+          #更新後に集計表を出すようにする
+          set_pdf(format)
+ 
+        else
+          #通常の更新の場合。
+   
+          format.html {redirect_to construction_cost_path(@construction_cost, :construction_id => params[:construction_id], 
+          :move_flag => params[:move_flag])}
+        end
+ 
+      else
         format.html { render :edit }
         format.json { render json: @construction_cost.errors, status: :unprocessable_entity }
       end
@@ -274,12 +274,12 @@ class ConstructionCostsController < ApplicationController
   #工事集計表の発行
   def set_pdf(format)
     
-	#集計表発行時にデータの初期値をセットする
+    #集計表発行時にデータの初期値をセットする
     $construction_costs = @construction_cost 
     
-	#プリントフラグをセット（赤ラインか黒ライン（PDF）の切り分け用）
-	$print_type_costs = params[:construction_cost][:print_flag_hide]
-	
+    #プリントフラグをセット（赤ラインか黒ライン（PDF）の切り分け用）
+    $print_type_costs = params[:construction_cost][:print_flag_hide]
+
     format.html { render :edit }
     format.pdf do
       	
@@ -293,17 +293,17 @@ class ConstructionCostsController < ApplicationController
          type:        "application/pdf",
          disposition: "inline")
     end
-	
+
     #del180117
-	#集計済みフラグ（工事データ）をセットする
-	#set_caluculated_flag
+    #集計済みフラグ（工事データ）をセットする
+    #set_caluculated_flag
   end
   
   
   #集計表発行時にデータの初期値をセットする
   def set_default_data
     
-	
+
     #params[:construction_datum_id] = @construction_costs.pluck("construction_datum_id")[0].to_s
     params[:construction_datum_id] = @construction_costs.first.construction_datum_id.to_s
     
@@ -316,14 +316,14 @@ class ConstructionCostsController < ApplicationController
         @construction_costs[0].labor_cost = construction_labor_cost
       end
     end
-	
+
     #仕入金額をセット
     if @construction_costs[0].purchase_amount == 0
       purchase_amount = PurchaseDatum.where(:construction_datum_id => params[:construction_datum_id]).sum(:purchase_amount)
       if purchase_amount.present?
         @construction_costs[0].purchase_amount = purchase_amount
 
-end
+    end
       #仕入明細をセット
       purchase_order_amount_select
       
@@ -333,35 +333,35 @@ end
     end
     
     
-	#実行金額をセット
-	if @construction_costs[0].execution_amount == 0
+    #実行金額をセット
+    if @construction_costs[0].execution_amount == 0
       execution_amount = construction_labor_cost + purchase_amount
       @construction_costs[0].execution_amount = execution_amount
     end
-	
+
   end
 
   # ajax
   def construction_name_select
-     @construction_name = ConstructionDatum.where(:id => params[:id]).where("id is NOT NULL").pluck(:construction_name).flatten.join(" ")
+    @construction_name = ConstructionDatum.where(:id => params[:id]).where("id is NOT NULL").pluck(:construction_name).flatten.join(" ")
   end
   def construction_labor_cost_select
        
-	   
-       @construction_labor_cost_origin = ConstructionDailyReport.where(:construction_datum_id => params[:construction_datum_id]).sum(:labor_cost)
-       @construction_labor_cost = ConstructionCost.where(:construction_datum_id => params[:construction_datum_id]).pluck(:labor_cost).flatten.join(" ")
+   
+    @construction_labor_cost_origin = ConstructionDailyReport.where(:construction_datum_id => params[:construction_datum_id]).sum(:labor_cost)
+    @construction_labor_cost = ConstructionCost.where(:construction_datum_id => params[:construction_datum_id]).pluck(:labor_cost).flatten.join(" ")
        
-       if params[:labor_cost].nil? || params[:labor_cost] == "0"
-         if @construction_labor_cost.to_i > 0
-           @construction_labor_cost = @construction_labor_cost.to_i
-         else
-		    #upd170330 労務費が故意にゼロの場合もありうる(外注費とするため）
-		    @construction_labor_cost = 0
-           #@construction_labor_cost = @construction_labor_cost_origin.to_i
-         end
-       else
-         @construction_labor_cost = params[:labor_cost]
-       end
+    if params[:labor_cost].nil? || params[:labor_cost] == "0"
+      if @construction_labor_cost.to_i > 0
+        @construction_labor_cost = @construction_labor_cost.to_i
+      else
+        #upd170330 労務費が故意にゼロの場合もありうる(外注費とするため）
+        @construction_labor_cost = 0
+        #@construction_labor_cost = @construction_labor_cost_origin.to_i
+      end
+    else
+      @construction_labor_cost = params[:labor_cost]
+    end
     
      
   end
@@ -410,36 +410,36 @@ end
   
   #集計済みフラグ（工事データ）をセットする
   def set_caluculated_flag
-     #construction_data = ConstructionDatum.find(params[:construction_datum_id])
-	 if params[:construction_datum_id].present? 
-	 
-	   #binding.pry
-	 
-	   #construction_data = ConstructionDatum.find(params[:construction_datum_id])
-     #upd230721
-     construction_data = ConstructionDatum.where(id: params[:construction_datum_id]).first
-	   
-	   if construction_data.present?
-	 
-	     construction_data_params = { calculated_flag: 1 }
-	   
-	     #工事データを更新
-	     construction_data.update(construction_data_params)
-	   
-	   end
-	 end
+    #construction_data = ConstructionDatum.find(params[:construction_datum_id])
+    if params[:construction_datum_id].present? 
+   
+      #binding.pry
+
+      #construction_data = ConstructionDatum.find(params[:construction_datum_id])
+      #upd230721
+      construction_data = ConstructionDatum.where(id: params[:construction_datum_id]).first
+
+      if construction_data.present?
+
+        construction_data_params = { calculated_flag: 1 }
+
+        #工事データを更新
+        construction_data.update(construction_data_params)
+
+      end
+    end
   end
   
    
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_construction_cost
-      @construction_cost = ConstructionCost.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_construction_cost
+    @construction_cost = ConstructionCost.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def construction_cost_params
-      params.require(:construction_cost).permit(:construction_datum_id, :supplies_expense, :labor_cost, :misellaneous_expense, :constructing_amount, :purchase_order_amount, 
-                                                :purchase_amount, :execution_amount, :final_return_division)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def construction_cost_params
+    params.require(:construction_cost).permit(:construction_datum_id, :supplies_expense, :labor_cost, :misellaneous_expense, :constructing_amount, :purchase_order_amount, 
+                                              :purchase_amount, :execution_amount, :final_return_division)
+  end
 end

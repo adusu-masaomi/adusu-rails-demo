@@ -126,7 +126,15 @@ class OutsourcingDataController < ApplicationController
           
       contain_no_payment_date = true
         
-      custom_q_0 = query
+      #custom_q_0 = query
+      #upd231007 rails6?対応
+      if query[:supplier_id_eq].present?
+        custom_q_0 = query.permit!.to_h
+      else
+        custom_q_0 = query
+      end
+      #
+      
       custom_q_1 = {:supplier_id_eq => query["supplier_id_eq"] , :outsourcing_payment_flag_eq => "0", 
                     :outsourcing_invoice_flag_eq => "1", :payment_due_date_null => true }
       #支払済みのものも出力するように
@@ -1157,8 +1165,12 @@ class OutsourcingDataController < ApplicationController
     
     
     #作業開始日を取得
+    #working_start_date = ConstructionDailyReport.where(:construction_datum_id => 
+    #     @construction_datum_id).where(:staff_id => staff_id).minimum(:working_date)
+    #upd231009
     working_start_date = ConstructionDailyReport.where(:construction_datum_id => 
-         @construction_datum_id).where(:staff_id => staff_id).minimum(:working_date)
+         @construction_datum_id).joins(:Staff).where(staffs: { supplier_master_id: supplier_master_id }).minimum(:working_date)
+    
     #作業終了日を取得
     #作業完了日は担当(外注)に絞らない
     @working_end_date = ConstructionDailyReport.where(:construction_datum_id => 

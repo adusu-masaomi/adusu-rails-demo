@@ -121,7 +121,14 @@ class OutsourcingInvoicePDF
       report.page.item(:supplier_responsible).value(@supplier_responsible)
       report.page.item(:supplier_tel).value(@supplier_tel)
       report.page.item(:supplier_fax_label).value(@supplier_fax_label)  
-      report.page.item(:supplier_fax).value(@supplier_fax)              
+      #report.page.item(:supplier_fax).value(@supplier_fax)              
+      
+      #add231011
+      if @supplier_fax.present?
+        report.page.item(:supplier_fax_label).value(@supplier_fax_label) 
+        report.page.item(:supplier_fax).value(@supplier_fax) 
+      end
+      #
       #
         
       #注文No
@@ -330,13 +337,19 @@ end
       @supplier_responsible = supplier.responsible_name
       @supplier_tel = supplier.tel_main
       
+      #add231011
+      @supplier_fax = supplier.fax_main
+      @supplier_fax_label = "FAX"
+      #
+      
       @supplier_bank_name = supplier.bank_name
       @supplier_bank_branch_name = supplier.bank_branch_name
       if supplier.account_type.present?
         @supplier_account_type_name = SupplierMaster.account_type_division[supplier.account_type][0]
       end
       @supplier_account_number = supplier.account_number
-      @supplier_account_name = supplier.responsible_name
+      #@supplier_account_name = supplier.responsible_name
+      @supplier_account_name = supplier.holder  #upd231011
     end
     
     
